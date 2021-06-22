@@ -94,15 +94,13 @@ public class CourseRepository {
         try {
             String query = "FOR t IN " + collectionName + " FILTER t.destination == @city COLLECT WITH COUNT INTO length RETURN length";
             Map<String, Object> bindVars = Collections.singletonMap("city", city);
-            ArangoCursor<BaseDocument> cursor = db.query(query, bindVars, null, BaseDocument.class);
-            cursor.forEachRemaining(aDocument -> {
-                System.out.println("Number of courses with " + city + " as destination:" + aDocument.getAttribute("length"));
+            ArangoCursor<Integer> cursor = db.query(query, bindVars, null, Integer.class);
+            cursor.forEachRemaining(count -> {
+                System.out.println("Number of courses with " + city + " as destination:" + count);
             });
         } catch (ArangoDBException e) {
             System.err.println("Failed to execute query. " + e.getMessage());
         }
-
-        //System.out.println("Number of courses with that destination: " + count);
     }
 
     public void getAll() {
